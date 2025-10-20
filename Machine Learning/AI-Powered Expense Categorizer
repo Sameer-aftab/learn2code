@@ -1,0 +1,29 @@
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+
+# Sample training data
+data = {
+    "description": [
+        "McDonald's burger",
+        "Uber ride home",
+        "Amazon purchase",
+        "Netflix subscription",
+        "Grocery store"
+    ],
+    "category": ["Food", "Transport", "Shopping", "Entertainment", "Groceries"]
+}
+
+df = pd.DataFrame(data)
+X = CountVectorizer().fit_transform(df["description"])
+y = df["category"]
+
+model = MultinomialNB().fit(X, y)
+
+# Predict category
+def predict_category(text):
+    vector = CountVectorizer(vocabulary=X.vocabulary_).fit_transform([text])
+    return model.predict(vector)[0]
+
+print(predict_category("Pizza Hut order"))        # → Food
+print(predict_category("Bought a movie ticket"))  # → Entertainment
